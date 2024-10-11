@@ -30,6 +30,7 @@ const StyledContainer = styled(Box)({
     backgroundColor: '#DDE6ED',
 });
 
+
 const Sidebar = styled(Box)(({ theme }) => ({
     width: '20%',
     maxWidth: '350px',
@@ -42,6 +43,7 @@ const Sidebar = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
+    paddingTop: '0px', // Added padding at the top
 }));
 
 const MainContent = styled(Box)({
@@ -235,7 +237,7 @@ const Dashboard = () => {
                     <Typography variant="h5">{userData ? userData.username : 'Guest'}</Typography>
                     <Divider sx={{ margin: '10px 0' }} />
 
-                    <ContentBox>
+                    <ContentBox sx={{ marginBottom: '5px' }}>
                         <Typography variant="h6" sx={{ color: '#27374D' }}>Friends List</Typography>
                         <List>
                             {friends.length > 0 ? (
@@ -258,9 +260,15 @@ const Dashboard = () => {
                     </ContentBox>
                 </div>
                 <div>
-                    <Button variant="outlined" color="primary" onClick={toggleSettings}>
-                        <FaCog /> Settings
-                    </Button>
+                <Button 
+                    variant="outlined" 
+                    color="primary" 
+                    onClick={toggleSettings} 
+                    sx={{ marginTop: '0px' }} // Adjust margin-top as needed
+                >
+                    <FaCog /> Settings
+                </Button>
+
                     {settingsVisible && (
                         <div>
                             <Button onClick={handleUpdateProfile}>Update Profile</Button>

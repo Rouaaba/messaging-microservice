@@ -1,6 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import {
+    Box,
+    Button,
+    Typography,
+    TextField,
+    Snackbar,
+    Alert
+} from '@mui/material';
+import { styled } from '@mui/system';
+
+const StyledContainer = styled(Box)({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '20px',
+    height: '100vh',
+    backgroundColor: '#f0f4ff',
+});
+
+const FormContainer = styled(Box)({
+    width: '100%',
+    maxWidth: '600px',
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+});
 
 const UpdateProfile = () => {
     const [userData, setUserData] = useState({
@@ -9,22 +37,23 @@ const UpdateProfile = () => {
         firstname: '',
         lastname: '',
         phoneNumber: '',
-        birthdate: '',  // Add birthdate field
+        birthdate: '',
     });
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user) {
-                // Convert birthdate to YYYY-MM-DD format if it exists
                 const formattedBirthdate = user.birthdate 
-                    ? user.birthdate.split('/').reverse().join('-') // Converts dd/MM/yyyy to yyyy-MM-dd
-                    : ''; // Set to empty string if no birthdate
-                setUserData({ ...user, birthdate: formattedBirthdate }); // Populate the form with user data
+                    ? user.birthdate.split('/').reverse().join('-')
+                    : '';
+                setUserData({ ...user, birthdate: formattedBirthdate });
             } else {
                 console.error('No user data found, user not authenticated.');
-                navigate('/login'); // Redirect to login if not authenticated
+                navigate('/login');
             }
         };
 
@@ -43,21 +72,16 @@ const UpdateProfile = () => {
         e.preventDefault();
         const token = localStorage.getItem('token');
 
-        // Check if the token is available
         if (!token) {
             console.error('No token found. User is not authenticated.');
-            navigate('/login'); // Redirect if no token
+            navigate('/login');
             return;
         }
 
-        // Ensure the birthdate is in the correct format (YYYY-MM-DD)
         const updatedUserData = {
             ...userData,
-            birthdate: userData.birthdate.split('-').reverse().join('/'), // Convert back to dd/MM/yyyy for storage
+            birthdate: userData.birthdate.split('-').reverse().join('/'),
         };
-
-        console.log('Token being sent:', token);
-        console.log('User data being sent:', updatedUserData); // Log user data for debugging
 
         try {
             const response = await axiosInstance.put('/api/user/update', updatedUserData, {
@@ -66,47 +90,106 @@ const UpdateProfile = () => {
                 },
             });
             console.log('Profile updated:', response.data);
-            alert('Profile updated successfully!');
+            setSuccessMessage('Profile updated successfully!');
 
             localStorage.setItem('user', JSON.stringify(response.data));
             navigate('/dashboard');
         } catch (error) {
             console.error('Error updating profile:', error.response ? error.response.data : error.message);
-            alert('Error updating profile. Please check your credentials and try again.'); // Inform the user of the error
+            setErrorMessage('Error updating profile. Please check your credentials and try again.');
         }
     };
 
+    const handleCloseSnackbar = () => {
+        setSuccessMessage('');
+        setErrorMessage('');
+    };
+
     return (
-        <div>
-            <h2>Update Profile</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Username:</label>
-                    <input type="text" name="username" value={userData.username} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Email:</label>
-                    <input type="email" name="email" value={userData.email} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>First Name:</label>
-                    <input type="text" name="firstname" value={userData.firstname} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Last Name:</label>
-                    <input type="text" name="lastname" value={userData.lastname} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Phone Number:</label>
-                    <input type="text" name="phoneNumber" value={userData.phoneNumber} onChange={handleChange} />
-                </div>
-                <div>
-                    <label>Date of Birth:</label>
-                    <input type="date" name="birthdate" value={userData.birthdate} onChange={handleChange} />
-                </div>
-                <button type="submit">Update Profile</button>
-            </form>
-        </div>
+        <StyledContainer>
+            <FormContainer>
+                <Typography variant="h4" textAlign="center" mb={3}>
+                    Update Profile
+                </Typography>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        fullWidth
+                        label="Username"
+                        name="username"
+                        value={userData.username}
+                        onChange={handleChange}
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Email"
+                        name="email"
+                        value={userData.email}
+                        onChange={handleChange}
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="First Name"
+                        name="firstname"
+                        value={userData.firstname}
+                        onChange={handleChange}
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Last Name"
+                        name="lastname"
+                        value={userData.lastname}
+                        onChange={handleChange}
+                        required
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Phone Number"
+                        name="phoneNumber"
+                        value={userData.phoneNumber}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Birthdate"
+                        type="date"
+                        name="birthdate"
+                        value={userData.birthdate}
+                        onChange={handleChange}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        margin="normal"
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{ mt: 2 }}
+                    >
+                        Update Profile
+                    </Button>
+                </form>
+            </FormContainer>
+            <Snackbar open={!!successMessage} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+                    {successMessage}
+                </Alert>
+            </Snackbar>
+            <Snackbar open={!!errorMessage} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+                    {errorMessage}
+                </Alert>
+            </Snackbar>
+        </StyledContainer>
     );
 };
 
