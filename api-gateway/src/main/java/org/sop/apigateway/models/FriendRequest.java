@@ -14,4 +14,6 @@ public class FriendRequest {
     private LocalDate sentAt;
     private Long senderId;
     private Long receiverId;
+    private String senderUsername;  
+    private String receiverUsername; 
 }

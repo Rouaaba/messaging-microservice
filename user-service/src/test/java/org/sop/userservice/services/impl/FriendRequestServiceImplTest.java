@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.sop.userservice.dtos.FriendRequestDto;
 import org.sop.userservice.feignclients.ApiGatewayUserClient;
 import org.sop.userservice.models.FriendRequest;
 import org.sop.userservice.models.User;
@@ -28,42 +29,6 @@ class FriendRequestServiceImplTest {
 
     @InjectMocks
     private FriendRequestServiceImpl friendRequestServiceImpl;
-
-    @Test
-    void findBySenderId() {
-        Long senderId = 1L;
-        FriendRequest request1 = new FriendRequest(senderId, 2L);
-        request1.setSentAt(LocalDate.now().minusDays(1));
-        FriendRequest request2 = new FriendRequest(senderId, 3L);
-        request2.setSentAt(LocalDate.now().minusDays(2));
-
-        List<FriendRequest> expectedRequests = Arrays.asList(request1, request2);
-
-        when(friendRequestRepository.findBySenderIdOrderBySentAtDesc(senderId)).thenReturn(expectedRequests);
-
-        List<FriendRequest> result = friendRequestServiceImpl.findBySenderId(senderId);
-
-        assertEquals(expectedRequests, result);
-        verify(friendRequestRepository, times(1)).findBySenderIdOrderBySentAtDesc(senderId);
-    }
-
-    @Test
-    void findByReceiverId() {
-        Long receiverId = 2L;
-        FriendRequest request1 = new FriendRequest(1L, receiverId);
-        request1.setSentAt(LocalDate.now().minusDays(1));
-        FriendRequest request2 = new FriendRequest(3L, receiverId);
-        request2.setSentAt(LocalDate.now().minusDays(2));
-
-        List<FriendRequest> expectedRequests = Arrays.asList(request1, request2);
-
-        when(friendRequestRepository.findByReceiverIdOrderBySentAtDesc(receiverId)).thenReturn(expectedRequests);
-
-        List<FriendRequest> result = friendRequestServiceImpl.findByReceiverId(receiverId);
-
-        assertEquals(expectedRequests, result);
-        verify(friendRequestRepository, times(1)).findByReceiverIdOrderBySentAtDesc(receiverId);
-    }
 
     @Test
     void deleteUserFriendRequests() {

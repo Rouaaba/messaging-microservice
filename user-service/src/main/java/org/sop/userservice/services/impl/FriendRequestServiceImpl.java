@@ -9,9 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
+
+@Slf4j
 @Service
 public class FriendRequestServiceImpl implements FriendRequestService {
     @Autowired
@@ -43,11 +48,28 @@ public class FriendRequestServiceImpl implements FriendRequestService {
 
     @Transactional
     public User acceptRequest(Long senderId, Long receiverId) {
+        log.info("Checking friend request for senderId: {} and receiverId: {}", senderId, receiverId);
+        
+        // Find the friend request
         FriendRequest friendRequest = friendRequestRepository.findBySenderIdAndReceiverId(senderId, receiverId);
+        
+        // Log the found friend request
+        log.info("Found friend request: {}", friendRequest);
+        
+        // Ensure user exists
         User user = apiGatewayUserClient.findById(senderId);
-        if (friendRequest == null || user == null) return null;
+        if (friendRequest == null || user == null) {
+
+            log.warn("User with senderId: {} not found.", senderId);
+            return null;
+        }   
+        // Delete the friend request
         friendRequestRepository.deleteBySenderIdAndReceiverId(senderId, receiverId);
-        apiGatewayUserClient.addFriend(senderId, receiverId);
+        boolean added = apiGatewayUserClient.addFriend(senderId, receiverId);
+        log.info("Friend added: {}", added);
+        if (!added) {
+            log.error("Failed to add friend with senderId: {} and receiverId: {}", senderId, receiverId);
+        }
         return user;
     }
 

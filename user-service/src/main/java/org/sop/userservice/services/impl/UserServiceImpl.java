@@ -12,24 +12,11 @@ public class UserServiceImpl implements UserService {
     private FriendRequestService friendRequestService;
     @Autowired
     private ApiGatewayUserClient apiGatewayUserClient;
-    @Autowired
-    private PostServicePostClient postServicePostClient;
-    @Autowired
-    private PostServiceCommentClient postServiceCommentClient;
-    @Autowired
-    private PostServiceReactionClient postServiceReactionClient;
-    @Autowired
-    private PostServiceViewedPostClient postServiceViewedPostClient;
-    @Autowired
-    private ChatServiceMessageClient chatServiceMessageClient;
+
+
 
     public void deleteUser(Long id) {
         friendRequestService.deleteUserFriendRequests(id);
-        postServicePostClient.deleteByUserId(id);
-        postServiceCommentClient.deleteByUserId(id);
-        postServiceReactionClient.deleteByUserId(id);
-        postServiceViewedPostClient.deleteByUserId(id);
-        chatServiceMessageClient.deleteUserChats(id);
         apiGatewayUserClient.deleteById(id);
     }
 }

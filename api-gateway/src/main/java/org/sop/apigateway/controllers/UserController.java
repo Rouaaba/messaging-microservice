@@ -26,9 +26,10 @@ public class UserController {
         if (user == null) return null;
         return modelMapper.map(user, UserDto.class);
     }
+    
 
     @GetMapping("/friends/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public List<FriendDto> findFriends(@PathVariable Long id) {
         List<User> friends = userService.findFriends(id);
         List<FriendDto> friendDtos = new ArrayList<>();
@@ -61,7 +62,7 @@ public class UserController {
         return modelMapper.map(user, UserDto.class);
     }
 
-    @GetMapping("/add-friend/{id1}/{id2}")
+   @GetMapping("/add-friend/{id1}/{id2}")
     public boolean addFriend(@PathVariable Long id1, @PathVariable Long id2) {
         return userService.addFriend(id1, id2);
     }
@@ -71,6 +72,5 @@ public class UserController {
     public boolean removeFriend(@PathVariable Long id1, @PathVariable Long id2) {
         return userService.removeFriend(id1, id2);
     }
-
 
 }

@@ -16,4 +16,5 @@ public interface UserService {
     boolean addFriend(Long id1, Long id2);
 
     boolean removeFriend(Long id1, Long id2);
+
 }

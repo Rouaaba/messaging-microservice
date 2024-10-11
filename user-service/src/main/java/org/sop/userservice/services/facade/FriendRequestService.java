@@ -18,4 +18,5 @@ public interface FriendRequestService {
     User acceptRequest(Long senderId, Long receiverId);
 
     void rejectRequest(Long senderId, Long receiverId);
+
 }

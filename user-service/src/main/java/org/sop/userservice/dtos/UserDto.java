@@ -1,16 +1,20 @@
-package org.sop.apigateway.dtos;
+package org.sop.userservice.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class FriendDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDto {
     private Long id;
     private String username;
     private String firstname;
     private String lastname;
     private String email;
-    private String bio;
-    private String image;
+    private String phoneNumber;
 }
+

@@ -18,16 +18,6 @@ class UserServiceImplTest {
     private FriendRequestService friendRequestService;
     @Mock
     private ApiGatewayUserClient apiGatewayUserClient;
-    @Mock
-    private PostServicePostClient postServicePostClient;
-    @Mock
-    private PostServiceCommentClient postServiceCommentClient;
-    @Mock
-    private PostServiceReactionClient postServiceReactionClient;
-    @Mock
-    private PostServiceViewedPostClient postServiceViewedPostClient;
-    @Mock
-    private ChatServiceMessageClient chatServiceMessageClient;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -40,11 +30,6 @@ class UserServiceImplTest {
         userServiceImpl.deleteUser(userId);
 
         verify(friendRequestService, times(1)).deleteUserFriendRequests(userId);
-        verify(postServicePostClient, times(1)).deleteByUserId(userId);
-        verify(postServiceCommentClient, times(1)).deleteByUserId(userId);
-        verify(postServiceReactionClient, times(1)).deleteByUserId(userId);
-        verify(postServiceViewedPostClient, times(1)).deleteByUserId(userId);
-        verify(chatServiceMessageClient, times(1)).deleteUserChats(userId);
         verify(apiGatewayUserClient, times(1)).deleteById(userId);
     }
 }

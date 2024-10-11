@@ -1,7 +1,9 @@
 package org.sop.apigateway.feignclients;
 
 import org.sop.apigateway.dtos.FriendDto;
+import org.sop.apigateway.dtos.UserDto;
 import org.sop.apigateway.models.FriendRequest;
+import org.sop.apigateway.security.models.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +17,6 @@ public interface UserServiceFriendRequestClient {
     @GetMapping("/sent-friend-requests/{senderId}")
     List<FriendRequest> findBySenderId(@PathVariable Long senderId);
 
-
     @GetMapping("/received-friend-requests/{receiverId}")
     List<FriendRequest> findByReceiverId(@PathVariable Long receiverId);
 
@@ -27,4 +28,12 @@ public interface UserServiceFriendRequestClient {
 
     @DeleteMapping("/reject/{senderId}/{receiverId}")
     void rejectRequest(@PathVariable Long senderId, @PathVariable Long receiverId);
+    
+    // New methods added
+    @GetMapping("/sent-invitations/{userId}")
+    List<FriendRequest> findSentInvitations(@PathVariable Long userId);
+
+    @GetMapping("/received-invitations/{userId}")
+    List<FriendRequest> findReceivedInvitations(@PathVariable Long userId);
+
 }
