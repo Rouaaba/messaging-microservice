@@ -1,0 +1,81 @@
+version: "3.8"
+name: social-media-app
+services:
+  cvlabdb:
+    image: mysql
+    container_name: cvlabdb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: cvlab
+    ports:
+      - "3308:3308"
+    volumes:
+      - cvlabdata:/var/lib/mysql
+    networks:
+      - cvlabnet
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: cvlabdb
+      MYSQL_ROOT_PASSWORD: cvlab
+    ports:
+      - "8000:80"
+    networks:
+      - cvlabnet
+    depends_on:
+      - cvlabdb
+
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    restart: always
+    ports:
+      - "8036:8036"
+    networks:
+      - cvlabnet
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    ports:
+      - "8086:8086"
+    networks:
+      - cvlabnet
+    depends_on:
+      - cvlabdb
+      - eureka-server
+      - user-service
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    restart: always
+    ports:
+      - "8100:8100"
+    networks:
+      - cvlabnet
+    depends_on:
+      - cvlabdb
+      - eureka-server
+
+  message-service:
+    build: ./message
+    container_name: message-service
+    restart: always
+    ports:
+      - "8008:8008"
+    networks:
+      - cvlabnet
+    depends_on:
+      - cvlabdb
+      - eureka-server
+
+volumes:
+  cvlabdata:
+
+networks:
+  cvlabnet:
