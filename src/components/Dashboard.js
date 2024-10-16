@@ -328,7 +328,7 @@ const Dashboard = () => {
                     {peopleYouMayKnow.length > 0 ? (
                         peopleYouMayKnow.map((person) => (
                             <ListItem key={person.id}>
-                                <ListItemText primary={`${person.firstname} ${person.lastname}`} />
+                                <ListItemText primary={`${person.username}`} />
                                 <Button 
                                     onClick={() => handleSendFriendRequest(person.id)} 
                                     variant="outlined" 
